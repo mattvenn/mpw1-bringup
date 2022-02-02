@@ -123,3 +123,5 @@ otherwise switches back to sevenseg
 worked straight away
 
 waveform looks a bit slow to rise. ws2812 might have problems reading it.
+
+but it works, hooked up to the dygma shortcut proto. animation lasts a few seconds before cpu hangs
