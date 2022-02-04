@@ -108,7 +108,13 @@ Need to program the mux to set the oeb correct
 	li s0, (1 << 8) + (1 << 9) + (1 << 10)
 	sw s0, 4(a0)
 
+oeb isn't a thing without using tristate anyway. Ignore this.
+
 but this doesn't help with being able to adjust the time
+
+digital mode 000 is input disabled, need to be 001
+
+
 
 # ws2812 bringup
 
@@ -125,3 +131,27 @@ worked straight away
 waveform looks a bit slow to rise. ws2812 might have problems reading it.
 
 but it works, hooked up to the dygma shortcut proto. animation lasts a few seconds before cpu hangs
+
+# challenge
+
+10m clock
+
+	// challenge proj_6 (.uart(proj6_io_in[8]), .clk_10(proj6_clk), .led_green(proj6_io_out[9]), .led_red(proj6_io_out[10]));
+	// 8 input
+	// 9 output
+	// 10 output
+
+control.py can control a uart on the fpga
+    pass is q3kmvenn
+
+9 and 10 outputs are both high all the time
+
+    export CROSS=riscv64-unknown-elf-
+    ./sw/control.py --port /dev/ttyUSB2 --vdd 378 --vdd1 400 --vdd2 400 challenge
+
+needed to change config of IO to
+
+	li s3, 0x0040 // was 80
+	sw s3, IOCONF_OFS(9)
+
+then all works!

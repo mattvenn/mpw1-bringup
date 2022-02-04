@@ -22,36 +22,20 @@ _start:
 	addi    a1, a1, 4
 	bne	a1, a2, 1b
 
+	//
+	// challenge proj_6 (.uart(proj6_io_in[8]), .clk_10(proj6_clk), .led_green(proj6_io_out[9]), .led_red(proj6_io_out[10]));
+	// 8 input
+	// 9 output
+	// 10 output
+
 	// Load config
 
-	li s3, 0x0080
+	li s3, 0x0040
 	sw s3, IOCONF_OFS(9)
-	li s3, 0x0100
+	li s3, 0x0600
 	sw s3, IOCONF_OFS(10)
-	li s3, 0x0200
+	li s3, 0x0c00
 	sw s3, IOCONF_OFS(11)
-
-	li s3, 0x1800
-	sw s3, IOCONF_OFS(12)
-
-	li s3, 0x1000
-	sw s3, IOCONF_OFS(13)
-
-	li s3, 0x0003
-	sw s3, IOCONF_OFS(14)
-
-	li s3, 0x0003
-	sw s3, IOCONF_OFS(15)
-	li s3, 0x0003
-	sw s3, IOCONF_OFS(16)
-	li s3, 0x0003
-	sw s3, IOCONF_OFS(17)
-	li s3, 0x000c
-	sw s3, IOCONF_OFS(18)
-	li s3, 0x0018
-	sw s3, IOCONF_OFS(19)
-	li s3, 0x0030
-	sw s3, IOCONF_OFS(20)
 
 	// Trigger load
 	li s0, 1
@@ -62,15 +46,11 @@ _start:
 	lw s0, 0(a0)
 	bne s0, zero, 1b
 
-	// Enable project 2
+	// Enable project 6
 	li a0, 0x30000000
-	li s0, 2
+	li s0, 6
 	sw s0, 0(a0)
 
-
-    // set the oeb reg to get inputs working
-	li s0, (1 << 8) + (1 << 9) + (1 << 10)
-	sw s0, 4(a0)
 
 	li a0, 0x00000000
 	// Infinite loop

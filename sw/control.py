@@ -239,6 +239,7 @@ class BaseTest:
 		opt_defs = [f'-D{k}={v}' for k,v in defs.items()]
 
 		# Build in temp dir
+		print("building fw %s" % self._get_fw_path(filename))
 		with tempfile.TemporaryDirectory() as tmpdir:
 			subprocess.call([
 				CROSS + 'gcc',
@@ -254,6 +255,7 @@ class BaseTest:
 				os.path.join(tmpdir, 'fw.bin')
 			])
 			self.ctrl.load_fw(os.path.join(tmpdir, 'fw.bin'))
+			print("loaded fw")
 
 	@classmethod
 	def _all_subclasses(cls):
@@ -299,7 +301,7 @@ class BaseTest:
 
 class SimpleRunnerTest(BaseTest):
 
-	name = 'simple_runner'
+	name = 'simple-runner'
 
 	@classmethod
 	def _setup_custom_args(kls, parser):
@@ -312,14 +314,23 @@ class SimpleRunnerTest(BaseTest):
 			help="Enable auto-reset loop once loaded")
 
 	def run(self):
+		# Assert reset
 		self.ctrl.set_reset(True)
+
+		# Setup configured voltages
 		self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
-		self.ctrl.load_fw(self.args.firmware_bin)
-		self.ctrl.set_reset(False)
-		time.sleep(1)
-		self.ctrl.set_clk_div(4)
-#		time.sleep(1)
-#		self.ctrl.set_clk_div(2)
+
+		# Load firmware
+		if self.args.firmware_bin:
+			self.load_fw(self.args.firmware_bin)
+		else:
+			self.build_and_load_fw(self.args.firmware_src)
+
+		# Release reset
+		if self.args.reset_loop:
+			self.ctrl.set_reset_auto()
+		else:
+			self.ctrl.set_reset(False)
 
 
 class VDDScanTest(BaseTest):
@@ -478,7 +489,7 @@ class IOMapperTest(BaseTest):
 	def run(self):
 		# Config
 		ATTEMPTS = [
-		#	( "UM",   [0, -1], None ),		# User mode driver
+			( "UM",   [0, -1], None ),		# User mode driver
 			( "MM",   [0, -1, -12], '0' ),	# Mgmt drive low
 			( "MM-1", [0, -1, -13], '0' ),	# Mgmt drive low (internal shift = -1)
 			( "MM+1", [0, -1, -11], '0' ),	# Mgmt drive low (internal shift = +1)
@@ -566,67 +577,43 @@ class IOMapperTest(BaseTest):
 				bn_cur = bn_cur + 13
 
 
-class IOMapperDebugTest(IOMapperTest):
+class ChallengeTest(BaseTest):
 
-	name = 'io-mapper-debug'
+	name = 'challenge'
+
+	@classmethod
+	def _setup_custom_args(kls, parser):
+		pass
 
 	def run(self):
-		bn = 183
-		bo = [0,-1, -12]
-		name = 'X'
-		wiring = { 12: 1 }
-		io_num = 12
+		# Assert reset
+#		self.ctrl.set_clk_div(2)
+		self.ctrl.set_reset(True)
 
-		bn = 196
-		wiring = { 12: 2 }
+		# Setup configured voltages
+		self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
 
-		TESTS = []
-		for top in range(8):
-			for bot in range(16):
-				v = []
+		# Load firmware
+		
+		self.build_and_load_fw("test-challenge.S")
 
-				if top & 1:
-					v.append(1)
-				if top & 2:
-					v.append(0)
-				if top & 4:
-					v.append(-1)
+		# Release reset
+		self.ctrl.set_reset(False)
 
-				if bot & 1:
-					v.append(-11)
-				if bot & 2:
-					v.append(-12)
-				if bot & 4:
-					v.append(-13)
-				if bot & 8:
-					v.append(-14)
 
-				TESTS.append(v)
+		time.sleep(1)
 
-		print(TESTS)
-		print(len(TESTS))
+		# Configure UART
+		self.ctrl.wb.write(0x20001, 694-2)
 
-		for bn in range(bn-3, bn+4):
-			for bo in TESTS:
+		time.sleep(1)
 
-				defs = self._build_io_config([x + bn for x in bo])
-				print(defs)
+		print("sending passphrase")
+		# Test loop
+		for char in "q3kmvenn":
+			self.ctrl.wb.write(0x20000, ord(char))
+			time.sleep(0.001)
 
-				# Configure the board
-				self.ctrl.set_reset(True)
-				self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
-				self.build_and_load_fw("test-io-mapper.S", defs=defs)
-				self.ctrl.set_reset(False)
-
-				# Try to drive the pin
-				self.ctrl.iom_drive(0, False)
-				ss0 = self.ctrl.iom_sense()[wiring[io_num]]
-
-				self.ctrl.iom_drive(1, False)
-				ss1 = self.ctrl.iom_sense()[wiring[io_num]]
-
-				if self._bitval(ss0) == self._bitval(ss1):
-					print(f"Found {bn} {name}")
 
 
 # ----------------------------------------------------------------------------
