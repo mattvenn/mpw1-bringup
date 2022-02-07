@@ -614,6 +614,59 @@ class ChallengeTest(BaseTest):
 			self.ctrl.wb.write(0x20000, ord(char))
 			time.sleep(0.001)
 
+class SegTest(BaseTest):
+
+	name = '7seg'
+
+	@classmethod
+	def _setup_custom_args(kls, parser):
+		pass
+
+	def run(self):
+		# Assert reset
+		self.ctrl.set_reset(True)
+
+		# Setup configured voltages
+		self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
+
+		# Load firmware
+		
+		self.build_and_load_fw("test-7seg.S")
+
+		# Release reset
+		self.ctrl.set_reset(False)
+
+		time.sleep(0.1)
+		self.ctrl.set_clk_div(4)
+		time.sleep(0.1)
+		self.ctrl.set_clk_div(2)
+
+class VGATest(BaseTest):
+
+	name = 'vga'
+
+	@classmethod
+	def _setup_custom_args(kls, parser):
+		pass
+
+	def run(self):
+		# Assert reset
+		self.ctrl.set_reset(True)
+
+		# Setup configured voltages
+		self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
+
+		# Load firmware
+		
+		self.build_and_load_fw("test-vga.S")
+
+		# Release reset
+		self.ctrl.set_reset(False)
+
+		time.sleep(1)
+		self.ctrl.set_clk_div(4)
+		time.sleep(1)
+		self.ctrl.set_clk_div(2)
 
 
 # ----------------------------------------------------------------------------
