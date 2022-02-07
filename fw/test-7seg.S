@@ -23,7 +23,6 @@ _start:
 	bne	a1, a2, 1b
 
 	// Load config
-
     li s3, 0x0180
     sw s3, IOCONF_OFS(9)
 
@@ -39,17 +38,15 @@ _start:
 	li s3, 0x1000
 	sw s3, IOCONF_OFS(13)
 
-    li s3, 0x0001
+    li s3, 0x1001
     sw s3, IOCONF_OFS(14)
 
-    li s3, 0x0006
+//    li s3, 0x0002
+    li s3, 0x0000
     sw s3, IOCONF_OFS(15)
 
-	li s3, 0x0003
+    li s3, 0x0003
 	sw s3, IOCONF_OFS(16)
-
-	li s3, 0x0000
-	sw s3, IOCONF_OFS(17)
 
 	// Trigger load
 	li s0, 1
@@ -62,6 +59,11 @@ _start:
 
 	// Enable project 0
     // enabled by default
+
+    // set a new compare
+	li a0, 0x30000200
+	li s0, 2000000
+	sw s0, 0(a0)
 
 	li a0, 0x00000000
 	// Infinite loop
