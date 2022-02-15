@@ -636,10 +636,12 @@ class SegTest(BaseTest):
 		# Release reset
 		self.ctrl.set_reset(False)
 
+		"""
 		time.sleep(0.1)
 		self.ctrl.set_clk_div(4)
 		time.sleep(0.1)
 		self.ctrl.set_clk_div(2)
+		"""
 
 class VGATest(BaseTest):
 
@@ -667,6 +669,28 @@ class VGATest(BaseTest):
 		self.ctrl.set_clk_div(4)
 		time.sleep(1)
 		self.ctrl.set_clk_div(2)
+
+class WS2812Test(BaseTest):
+
+	name = 'ws2812'
+
+	@classmethod
+	def _setup_custom_args(kls, parser):
+		pass
+
+	def run(self):
+		# Assert reset
+		self.ctrl.set_reset(True)
+
+		# Setup configured voltages
+		self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
+
+		# Load firmware
+		
+		self.build_and_load_fw("test-ws2812.S")
+
+		# Release reset
+		self.ctrl.set_reset(False)
 
 
 # ----------------------------------------------------------------------------

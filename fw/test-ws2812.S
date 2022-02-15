@@ -22,26 +22,11 @@ _start:
 	addi    a1, a1, 4
 	bne	a1, a2, 1b
 
+    // turn on pin 8 as output
+    li s3, 0x0180
+    sw s3, IOCONF_OFS(9)
 
 
-
-        li s3, 0x0180
-        sw s3, IOCONF_OFS(9)
-        li s3, 0x0600
-        sw s3, IOCONF_OFS(10)
-        li s3, 0x0c00
-        sw s3, IOCONF_OFS(11)
-        li s3, 0x1800
-        sw s3, IOCONF_OFS(12)
-        li s3, 0x1000
-        sw s3, IOCONF_OFS(13)
-
-        li s3, 0x0001
-        sw s3, IOCONF_OFS(14)
-        li s3, 0x0006
-        sw s3, IOCONF_OFS(15)
-        li s3, 0x000c
-        sw s3, IOCONF_OFS(16)
 	// Trigger load
 	li s0, 1
 	sw s0, 0(a0)
