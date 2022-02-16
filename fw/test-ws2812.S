@@ -67,14 +67,15 @@ _start:
 
 
     // s2 is the reg used for what led to set
-    li s2, (6 << 24)
     // s3 is what gets written to led
+    li s8, 0
+    li s7, 0
     li s3, 0
 init_val:
     // s1 is used for the RGB value
     li s1, 0
 loop:
-    li s6, 100
+    li s6, 300
     li s5, 0
 inner:
     addi    s5, s5, 1
@@ -85,18 +86,27 @@ inner:
 	addi    s1, s1, 1
 
     // if s1 is 255, reset to 0
-    li s3, 200 // compare reg
+    li s3, 150 // compare reg
     bge s1, s3, init_val
 
-    // shift 8 bits to G, store in s3
-    slli s3,s1,0
+    // shift 8 bits to R, store in s3
+    slli s3,s1,8
 
     // the led and rgb value, store in s3
-   // addi s2, s1, 0
-//    addi s3, s2, 0
+    slli s2, s7, 24
+    add s4, s3, s2
+
 
     // write to led
-	sw s3, 0(a0)
+	sw s4, 0(a0)
+
+    // increment led
+    addi s8, s8, 1
+    li s9, 10
+    ble s8, s9, loop
+    // otherwise add to led
+    addi s7, s7, 3
+    li s8, 0
 	j loop
 
 
