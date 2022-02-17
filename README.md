@@ -127,6 +127,28 @@ colour b1 is working
 * 18 r1      works
 * 19 r2      works
 
+## Timing
+
+As the bringup board is set to 50.25Mhz.
+VGA board needs 31.5 to count in seconds.
+
+Updating PLL and Serial settings in the bringup RTL:
+
+-               .DIVF(7'b1000010), // 50.25
++               .DIVF(7'b1010011), // 63
+
+and 
+-               .UART_DIV(25), // 2 Mbaud
++               .UART_DIV(30), // 2 Mbaud
+
+Then clkdiv 2 results in 31.5.
+The build fails as it doesn't meet timing (only 61 MHz), but still seems to work.
+
+Then the panel doesn't lock, but increasing the logic supply voltage vdd1 from 400 to 420 then works:
+
+    ./sw/control.py --port /dev/ttyUSB1 --vdd 378 --vdd1 420 --vdd2 400 vga
+
+
 ## WS2812 bringup
 
 remove clk div stuff from control
