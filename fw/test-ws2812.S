@@ -26,7 +26,6 @@ _start:
     li s3, 0x0180
     sw s3, IOCONF_OFS(9)
 
-
 	// Trigger load
 	li s0, 1
 	sw s0, 0(a0)
@@ -41,18 +40,20 @@ _start:
 	li s0, 1
 	sw s0, 0(a0)
 
-    // set an led: write to address h30000100
-    // ws2812                proj_1 (.clk(proj1_clk), .reset(proj1_reset), .led_num(wbs_dat_i[31:24]), .rgb_data(wbs_dat_i[23:0]), .write(proj1_wb_update), .data(proj1_io_out[8]));
-
-    // https://github.com/mattvenn/ws2812-core/tree/776a4d527ff8af7ac508a334bb1ef970df6f5848
 	li a0, 0x30000100
-	//li s0, (7 << 24) + (255 << 16) + (0 << 8 ) + 0
+
+    /*
+    register 0x30000100 definition
+    | bits                               |
+    | 31 : 24 | 23 : 16 | 15 : 8 | 7 : 0 |
+    | led num | green   | red    | blue  |
+    */
+
+    // zero out the led reg
 	li s0, (7 << 24) + (0 << 16) + (0 << 8 ) + 0
 	sw s0, 0(a0)
-	//li s0, (6 << 24) + (0 << 16) + (255 << 8 ) + 0
 	li s0, (6 << 24) + (0 << 16) + (0 << 8 ) + 0
 	sw s0, 0(a0)
-//	li s0, (5 << 24) + (0 << 16) + (0 << 8 ) + 255 
 	li s0, (5 << 24) + (0 << 16) + (0 << 8 ) + 0
 	sw s0, 0(a0)
 	li s0, (4 << 24) + (0 << 16) + (0 << 8 ) + 0
@@ -63,7 +64,8 @@ _start:
 	sw s0, 0(a0)
 	li s0, (1 << 24) + (0 << 16) + (0 << 8 ) + 0
 	sw s0, 0(a0)
-
+	li s0, (0 << 24) + (0 << 16) + (0 << 8 ) + 0
+	sw s0, 0(a0)
 
 
     // s2 is the reg used for what led to set
@@ -75,9 +77,11 @@ init_val:
     // s1 is used for the RGB value
     li s1, 0
 loop:
+    // do this many nops before incrementing led value
     li s6, 300
     li s5, 0
 inner:
+    // this loop to slow things down enough to animate. 
     addi    s5, s5, 1
     nop
     ble s5, s6, inner
@@ -85,22 +89,26 @@ inner:
     // add 1 to s1
 	addi    s1, s1, 1
 
-    // if s1 is 255, reset to 0
+    // if led value is 150, reset to 0
     li s3, 150 // compare reg
     bge s1, s3, init_val
 
     // shift 8 bits to R, store in s3
     slli s3,s1,8
 
-    // the led and rgb value, store in s3
+    // add fixed 20 of blue (no shift needed as blue is bits 7:0)
+    li s5, 20
+    add s3, s3, s5
+
+    // shift the led number in reg s7 by 24 bits and store in s2
     slli s2, s7, 24
+    // add the led number (s2) and the rgb (s3) value, store in s4
     add s4, s3, s2
 
-
-    // write to led
+    // write to led, put what's in s4 into the memory address at a0 (at offset 0)
 	sw s4, 0(a0)
 
-    // increment led
+    // increment led number every 10 iterations
     addi s8, s8, 1
     li s9, 10
     ble s8, s9, loop
@@ -108,7 +116,6 @@ inner:
     addi s7, s7, 3
     li s8, 0
 	j loop
-
 
     // load a0 with nothing first to avoid mishaps when picorv32 crashes
 	li a0, 0x00000000
