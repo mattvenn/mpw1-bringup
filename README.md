@@ -132,8 +132,13 @@ waveform looks a bit slow to rise. ws2812 might have problems reading it.
 
 but it works, hooked up to the dygma shortcut proto. animation lasts a few seconds before cpu hangs
 
-# challenge
+    export CROSS=riscv64-unknown-elf-
+    ./sw/control.py --port /dev/ttyUSB1 --vdd 370 --vdd1 400 --vdd2 400 ws2812 # for IC 1
 
+# challenge TPM2137
+
+plug a wire from usr1 to io8
+logic analyser on 8, 9 & 10
 10m clock
 
 	// challenge proj_6 (.uart(proj6_io_in[8]), .clk_10(proj6_clk), .led_green(proj6_io_out[9]), .led_red(proj6_io_out[10]));
@@ -155,3 +160,13 @@ needed to change config of IO to
 	sw s3, IOCONF_OFS(9)
 
 then all works!
+
+# 7seg last segment
+
+can disable pin 14 and enable 13,
+or enable 13 and disable 14
+
+tnt: so my guess is that the bit that end up in bit 0 of pin 14 config and bit 12 of pin 13 config are the same ... problem is the former is the bit that assigns the IO 14 to the management core and the latter is the one enabling the output driven of pin 13.
+
+https://antmicro-skywater-pdk-docs.readthedocs.io/en/latest/contents/libraries/sky130_fd_io/docs/user_guide.html#io-drive-strength-modes
+

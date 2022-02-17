@@ -587,19 +587,16 @@ class ChallengeTest(BaseTest):
 
 	def run(self):
 		# Assert reset
-#		self.ctrl.set_clk_div(2)
 		self.ctrl.set_reset(True)
 
 		# Setup configured voltages
 		self.ctrl.set_voltages(self.cfg['vdd'], self.cfg['vdd1'], self.cfg['vdd2'])
 
 		# Load firmware
-		
 		self.build_and_load_fw("test-challenge.S")
 
 		# Release reset
 		self.ctrl.set_reset(False)
-
 
 		time.sleep(1)
 
@@ -608,7 +605,15 @@ class ChallengeTest(BaseTest):
 
 		time.sleep(1)
 
-		print("sending passphrase")
+		print("sending wrong passphrase")
+		# Test loop
+		for char in "badpass":
+			self.ctrl.wb.write(0x20000, ord(char))
+			time.sleep(0.001)
+
+		time.sleep(1)
+
+		print("sending good passphrase")
 		# Test loop
 		for char in "q3kmvenn":
 			self.ctrl.wb.write(0x20000, ord(char))
