@@ -1,5 +1,16 @@
 # MPW1 bringup notes
 
+See this [doc pack](https://docs.google.com/document/d/1lKKtgcVXwYAe81afha8X3PpY4TEB0o6XlIWKrYT2A7c/edit#) for:
+
+* Overview of bringup process
+* Blog post/videos
+* Links to postmortem board
+* MPW1 issues
+* Physical package, pinning
+* Scans/SEM
+* Designs
+* GDS
+
 ## rough voltage scan
 
     ./control.py --port /dev/ttyUSB1  vdd-scan
