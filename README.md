@@ -98,7 +98,24 @@ didn't work but
 
 did work. pin 12 is slow to rise as bad config. but with a 220R pullup get vga sync on the small monitor
 
-seems 1 colour is not working
+## Thu 17 Feb 12:30:18 CET 2022
+
+changed pin 13 vsync config and pin 14 to match 7 seg and now don't need pullup
+colour b1 is working
+
+* 8  adj sec works
+* 9  adj min works
+* 10 adj hr  works
+* 12 hsync   works
+* 13 vsync   works
+* 14 b1      either 14 or 15
+* 15 b2
+* 16 g1      works
+* 17 g2      works
+* 18 r1      works
+* 19 r2      works
+
+
 
 # Inputs not working
 

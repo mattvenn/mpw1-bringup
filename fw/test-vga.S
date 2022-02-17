@@ -24,32 +24,45 @@ _start:
 
 	// Load config
 
-	li s3, 0x0080
+    // input buttons
+	li s3, 0x0040
 	sw s3, IOCONF_OFS(9)
-	li s3, 0x0100
+	li s3, 0x0080
 	sw s3, IOCONF_OFS(10)
 	li s3, 0x0200
 	sw s3, IOCONF_OFS(11)
 
+    // hsync
 	li s3, 0x1800
 	sw s3, IOCONF_OFS(12)
-
-	li s3, 0x1000
+    // vsync
+	li s3, 0x1800
 	sw s3, IOCONF_OFS(13)
 
-	li s3, 0x0003
+    // colours
+    // b1 in pin 13 (last bit of vsync?)
+	li s3, 0x1000
 	sw s3, IOCONF_OFS(14)
-
+    // also pin 13
 	li s3, 0x0003
 	sw s3, IOCONF_OFS(15)
-	li s3, 0x0003
+
+    // b2
+	li s3, 0x0002
 	sw s3, IOCONF_OFS(16)
-	li s3, 0x0003
+
+    // g1 on pin 15
+	li s3, 0x0006
 	sw s3, IOCONF_OFS(17)
+
+    // from here good
+    // g2 on pin 16
 	li s3, 0x000c
 	sw s3, IOCONF_OFS(18)
+    // r1 on pin 17
 	li s3, 0x0018
 	sw s3, IOCONF_OFS(19)
+    // r2 on pin 18
 	li s3, 0x0030
 	sw s3, IOCONF_OFS(20)
 
@@ -66,11 +79,6 @@ _start:
 	li a0, 0x30000000
 	li s0, 2
 	sw s0, 0(a0)
-
-
-    // set the oeb reg to get inputs working
-	li s0, (1 << 8) + (1 << 9) + (1 << 10)
-	sw s0, 4(a0)
 
 	li a0, 0x00000000
 	// Infinite loop
