@@ -4,9 +4,8 @@
 
     ./control.py --port /dev/ttyUSB1  vdd-scan
 
-* 1st number is raw dac. eg (366 * 3.3 / 1024) = 1.18v
-* 2nd number is number of chip select transitions, should be around 1000
-
+1st number is raw dac. eg (366 * 3.3 / 1024) = 1.18v.
+2nd number is number of chip select transitions, should be around 1000
 
     338 -1
     340 -1
