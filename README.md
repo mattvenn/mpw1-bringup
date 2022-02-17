@@ -34,6 +34,9 @@
     386 -1
     388 58
 
+* See ./vdd-scans for more scanning.
+* Got chips 1, 2 & 10 working
+
 ## reliability
 
     ./control.py --port /dev/ttyUSB1  vdd-reliability --vdd-min 350 --vdd-max 380
@@ -48,7 +51,9 @@
 
 To load binary firmware:
 
-    ./sw/control.py --vdd 370 --vdd1 450 --vdd2 450 simple_runner --firmware-bin ./fw/test-matt.bin
+    ./sw/control.py --vdd 355 --vdd1 450 --vdd2 450 simple_runner --firmware-bin ./fw/test-matt.bin
+                          ^^^
+                    This number is the core voltage, use something in the middle of the range of 100% reliability
 
 ## rescan
 
