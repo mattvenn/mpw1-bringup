@@ -158,6 +158,7 @@ The build fails as it doesn't meet timing (only 61 MHz), but still seems to work
 Then the panel doesn't lock, but increasing the logic supply voltage vdd1 from 400 to 420 then works:
 
     ./sw/control.py --port /dev/ttyUSB1 --vdd 378 --vdd1 420 --vdd2 400 vga
+    ./sw/control.py --port /dev/ttyUSB0 --vdd 378 --vdd1 425 --vdd2 400 vga
 
 
 ## WS2812 bringup

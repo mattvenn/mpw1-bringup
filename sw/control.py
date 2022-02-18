@@ -670,8 +670,8 @@ class VGATest(BaseTest):
 		# Release reset
 		self.ctrl.set_reset(False)
 
-		time.sleep(1)
-		self.ctrl.set_clk_div(4)
+#		time.sleep(1)
+#		self.ctrl.set_clk_div(4)
 		time.sleep(1)
 		self.ctrl.set_clk_div(2)
 
