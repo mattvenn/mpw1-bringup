@@ -160,8 +160,19 @@ Then the panel doesn't lock, but increasing the logic supply voltage vdd1 from 4
     ./sw/control.py --port /dev/ttyUSB1 --vdd 378 --vdd1 420 --vdd2 400 vga
     ./sw/control.py --port /dev/ttyUSB0 --vdd 378 --vdd1 425 --vdd2 400 vga
 
+for future ref if icebreaker needs reflashing:
+
+    cd pyfive-mpw1-postmortem/icebreaker/bringup/ #and check on matt-vga branch
+    matt-desktop:2004 [matt-vga]: make prog
+    cd -
+    export CROSS=riscv64-unknown-elf-
+    ./sw/control.py --port /dev/ttyUSB1 --vdd 375 --vdd1 425 --vdd2 400 vga
+
+
+
 
 ## WS2812 bringup
+
 
 remove clk div stuff from control
 
