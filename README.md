@@ -227,3 +227,22 @@ tnt: so my guess is that the bit that end up in bit 0 of pin 14 config and bit 1
 
 https://antmicro-skywater-pdk-docs.readthedocs.io/en/latest/contents/libraries/sky130_fd_io/docs/user_guide.html#io-drive-strength-modes
 
+# Wed  4 May 10:18:15 CEST 2022
+
+helping with James A, wants vdd scan. Only works with original frequency
+
+    cd /home/matt/work/asic-workshop/shuttle1/bringup/pyfive-mpw1-postmortem/icebreaker/bringup
+    git checkout main
+    make prog
+
+then for vga (with different pll)
+
+    git checkout matt-vga
+    make prog
+
+# Thu 26 May 10:09:32 CEST 2022
+
+got chip2 working with vga, just needed extra pins soldering and a new vdd
+didn't boot till power cycled the fpga tho
+
+    ./sw/control.py --port /dev/ttyUSB1 --vdd 424 --vdd1 420 --vdd2 400 vga
